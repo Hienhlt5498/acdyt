@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html layout:decorator="template/layout" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+	<title th:text="#{S44.title}">Account Management</title>
+</head>
+
+<body>
+	<div layout:fragment="breadcrumb" th:remove="tag">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a th:href="@{/dashboard}" th:inline="text"><i class="fa fa-home"></i>
+					[[#{S02.breadcrumb}]]</a></li>
+			<li class="breadcrumb-item" th:text="#{S144.title}">Account Management</li>
+			<!-- Breadcrumb Menu-->
+			<li class="breadcrumb-menu d-md-down-none"></li>
+		</ol>
+	</div>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="animated fadeIn">
+			<div id="account_create" class="row d-none" shiro:hasPermission="account_create">{{ hasAccountCreatePermission }}
+			</div>
+			<div class="row">
+				<div class="col-sm-12 ">
+					<div class="card card-custom card-stretch">
+						<div class="card-body">
+							<table id="accounts" class="table b1 mb-1 datatable dataTable no-footer"
+								style="width: 100%">
+								<thead>
+									<tr class="bg-custom">
+										<th scope="col" style="border: 0; text-align: center;" aria-sort="ascending"
+											aria-label="ID: activate to sort column ascending">ID</th>
+										<th scope="col" style="border: 0; text-align: center;">Account Type</th>
+										<th scope="col" style="border: 0; text-align: center;">Email</th>
+										<th scope="col" style="border: 0; text-align: center;">Login Name</th>
+										<th scope="col" style="border: 0; text-align: center;">Created Date</th>
+										<th scope="col" style="border: 0; text-align: center;">Status</th>
+										<th scope="col" style="border: 0; text-align: left;">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="account in accounts">
+										<td style="border: 0; text-align: center;">{{ account.id }}</td>
+										<td style="border: 0; text-align: center;">{{ account.account_type }}</td>
+										<td style="border: 0; text-align: center;">{{ account.email }}</td>
+										<td style="border: 0; text-align: center;">{{ account.login_name }}</td>
+										<td style="border: 0; text-align: center;">{{ account.created_date }}</td>
+										<td style="border: 0; text-align: center; padding-top: 6px;">
+											<label class="mb-0 btn btn-outline-custom btn-sm mr-1"
+												v-if="account.status == 'ACTIVE'">{{ account.status }}</label>
+											<label class="mb-0 btn btn-outline-danger btn-sm mr-1"
+												v-if="account.status == 'INACTIVE'">{{ account.status }}</label>
+										</td>
+										<td style="border: 0; text-align: left; padding-top: 0;">
+											<div style="display: inline-flex">
+												<a href="#" title="Info Detail" class="btn-lg" shiro:hasPermission="account_edit"
+													v-on:click="gotoAccountDetail(event,account.id)">
+													<i class="fa fa-info-circle"></i>
+												</a>
+												<a href="#" title="Resources" class="btn-lg" shiro:hasPermission="server_view"
+													v-on:click="gotoVMList(event,account.id)">
+													<i class="fa fa-list"></i>
+												</a>
+												<a href="#" title="Bill Detail" class="btn-lg" shiro:hasPermission="report_view"
+													v-on:click="gotoBillDetail(event,account.id, account.login_name)">
+													<i class="fa fa-shopping-cart"></i>
+												</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div layout:fragment="script_footer" th:remove="tag">
+		<script
+			th:src="@{/node_modules/datatables.net/js/jquery.dataTables.js} + '?' + ${@buildTime.getTimestamp()}"></script>
+		<script
+			th:src="@{/node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js} + '?' + ${@buildTime.getTimestamp()}"></script>
+		<script th:src="@{/assets/js/app/func.js} + '?' + ${@buildTime.getTimestamp()}"></script>
+		<script th:src="@{/assets/js/app/account_list.js} + '?' + ${@buildTime.getTimestamp()}"></script>
+	</div>
+</body>
+
+</html>
